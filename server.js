@@ -15,10 +15,13 @@ const app = express();
 
 // db
 mongoose
-    .connect(process.env.DATABASE_LOCAL, {
+    .connect(process.env.DATABASE_CLOUD, {
         useNewUrlParser: true,
     })
-    .then(() => console.log("DB Connected"));
+    .then(() => console.log("DB Connected"))
+    .catch(err => {
+        console.log(err);
+    });
 
 // middlewares
 app.use(morgan("dev"));
