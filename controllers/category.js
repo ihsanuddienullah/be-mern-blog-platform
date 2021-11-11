@@ -40,10 +40,15 @@ exports.read = (req, res) => {
 
 exports.remove = (req, res) => {
     const slug = req.params.slug.toLowerCase();
-    Category.findOneRemove({ slug }).exec((err, data) => {
+
+    Category.findOneAndRemove({ slug }).exec((err, data) => {
         if (err) {
-            return res.status(400).json({ error: errorHandler(err) });
+            return res.status(400).json({
+                error: errorHandler(err)
+            });
         }
-        res.json({ message: "Category deleted successfully" });
+        res.json({
+            message: 'Category deleted successfully'
+        });
     });
 };
