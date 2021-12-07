@@ -258,7 +258,7 @@ exports.photo = (req, res) => {
             if (err || !blog) {
                 return res.status(400).json({ error: errorHandler(err) });
             }
+            res.set("Content-Type", blog.photo.contentType);
+            return res.send(blog.photo.data);
         });
-    res.set("Content-Type", blog.photo.contentType);
-    return res.send(blog.photo.data)
 };
