@@ -52,7 +52,8 @@ exports.create = (req, res) => {
         blog.slug = slugify(title).toLowerCase();
         blog.mtitle = `${title} | ${process.env.APP_NAME}`;
         blog.mdesc = stripHtml(body.substring(0, 160)).result;
-        blog.postedBy = req.user_id;
+        blog.postedBy = req.auth._id;
+        console.log(req.auth);
 
         // categories and tags
         let arrayOfCategories = categories && categories.split(",");
@@ -131,7 +132,7 @@ exports.listAllBlogsCategoriesTags = (req, res) => {
     Blog.find({})
         .populate("categories", "_id name slug")
         .populate("tags", "_id name slug")
-        .populate("postedBy", "_id name username")
+        .populate("postedBy", "_id name username profile")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -140,19 +141,28 @@ exports.listAllBlogsCategoriesTags = (req, res) => {
         )
         .exec((err, data) => {
             if (err) {
-                return res.json({ error: errorHandler(err) });
+                return res.json({
+                    error: errorHandler(err),
+                });
             }
-            blogs = data;
+            blogs = data; // blogs
+            // get all categories
             Category.find({}).exec((err, c) => {
                 if (err) {
-                    return res.json({ error: errorHandler(err) });
+                    return res.json({
+                        error: errorHandler(err),
+                    });
                 }
-                categories = c;
+                categories = c; // categories
+                // get all tags
                 Tag.find({}).exec((err, t) => {
                     if (err) {
-                        return res.json({ error: errorHandler(err) });
+                        return res.json({
+                            error: errorHandler(err),
+                        });
                     }
                     tags = t;
+                    // return all blogs categories tags
                     res.json({ blogs, categories, tags, size: blogs.length });
                 });
             });
