@@ -6,9 +6,9 @@ const blogSchema = new mongoose.Schema(
         title: {
             type: String,
             trim: true,
-            required: true,
             min: 3,
-            max: 32,
+            max: 160,
+            required: true,
         },
         slug: {
             type: String,
@@ -36,7 +36,7 @@ const blogSchema = new mongoose.Schema(
             contentType: String,
         },
         categories: [{ type: ObjectId, ref: "Category", required: true }],
-        tags: [{ type: ObjectId, ref: "Category", required: true }],
+        tags: [{ type: ObjectId, ref: "Tag", required: true }],
         postedBy: {
             type: ObjectId,
             ref: "User",
