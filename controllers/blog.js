@@ -291,7 +291,7 @@ exports.listRelated = (req, res) => {
         });
 };
 
-exports.listSearch = (req, res) => {
+exports.listSearch = (req, res) => {    
     const { search } = req.query;
     if (search) {
         Blog.find(
@@ -301,7 +301,7 @@ exports.listSearch = (req, res) => {
                     { body: { $regex: search, $options: "i" } },
                 ],
             },
-            (err, blog) => {
+            (err, blogs) => {
                 if (err) {
                     return res.status(400).json({
                         error: errorHandler(err),
