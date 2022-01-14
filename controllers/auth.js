@@ -4,6 +4,7 @@ const { errorHandler } = require("../helpers/dbErrorHandler");
 const shortId = require("shortid");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
+const { sendEmailWithNodemailer } = require("../helpers/email");
 
 exports.signup = (req, res) => {
     // console.log(req.body);
@@ -129,3 +130,43 @@ exports.canUpdateDeleteBlog = (req, res, next) => {
         next();
     });
 };
+
+exports.forgotPassword = (req, res) => {
+    const { email } = req.body;
+
+    User.findOne({ email }, (err, user) => {
+        if (err || !user) {
+            return res.status(400).json({
+                error: "User with that email does not exist",
+            });
+        }
+        const token = jwt.sign(
+            { _id: user._id },
+            process.env.JWT_RESET_PASSWORD,
+            { expiresIn: "10m" }
+        );
+
+        const emailData = {
+            from: process.env.EMAIL_FROM_FORGOT_PASSWORD, // MAKE SURE THIS EMAIL IS YOUR GMAIL FOR WHICH YOU GENERATED APP PASSWORD
+            to: email, // WHO SHOULD BE RECEIVING THIS EMAIL? IT SHOULD BE YOUR GMAIL
+            subject: `Password reset link`,
+            html: `                
+                <p>Please use the following password to reset your password:</p>
+                <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>                
+                <hr />
+                <p>This email may contain sensitive information</p>
+                <p>https://onemancode.com</p>
+            `,
+        };
+
+        return user.updateOne({ resetPasswordLink: token }, (err, success) => {
+            if (err) {
+                return res.json({ error: errorHandler(err) });
+            } else {
+                sendEmailWithNodemailer(req, res, emailData, email);
+            }
+        });
+    });
+};
+
+exports.resetPassword = (req, res) => {};
