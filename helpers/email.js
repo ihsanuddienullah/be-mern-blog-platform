@@ -1,6 +1,12 @@
 const nodeMailer = require("nodemailer");
 
-exports.sendEmailWithNodemailer = (req, res, emailData, forgotPasswordEmail) => {
+exports.sendEmailWithNodemailer = (
+    req,
+    res,
+    emailData,
+    forgotPasswordEmail,
+    preSignupEmail
+) => {
     const transporter = nodeMailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -22,6 +28,10 @@ exports.sendEmailWithNodemailer = (req, res, emailData, forgotPasswordEmail) => 
             if (forgotPasswordEmail) {
                 return res.json({
                     message: `Email has been sent to ${forgotPasswordEmail}. Follow the instructions to reset your password. Link expires in 10min.`,
+                });
+            } else if (preSignupEmail) {
+                return res.json({
+                    message: `Email has been sent to ${preSignupEmail}. Follow the instructions to activate your account.`,
                 });
             } else {
                 return res.json({
