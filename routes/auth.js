@@ -4,10 +4,11 @@ const {
     signup,
     signin,
     signout,
-    requireSignin,    
+    requireSignin,
     forgotPassword,
     resetPassword,
-    preSignup
+    preSignup,
+    googleLogin
 } = require("../controllers/auth");
 
 // validators
@@ -23,8 +24,21 @@ router.post("/pre-signup", userSignupValidator, runValidation, preSignup);
 router.post("/signup", signup);
 router.post("/signin", userSigninValidator, runValidation, signin);
 router.get("/signout", signout);
-router.put("/forgot-password", forgotPasswordValidator, runValidation, forgotPassword);
-router.put("/reset-password", resetPasswordValidator, runValidation, resetPassword);
+router.put(
+    "/forgot-password",
+    forgotPasswordValidator,
+    runValidation,
+    forgotPassword
+);
+router.put(
+    "/reset-password",
+    resetPasswordValidator,
+    runValidation,
+    resetPassword
+);
+// google login
+router.post("/google-login", googleLogin);
+
 // test
 router.get("/secret", requireSignin, (req, res) => {
     res.json({
