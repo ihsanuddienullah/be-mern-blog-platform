@@ -34,6 +34,14 @@ app.use(cookieParser());
 // cors
 if (process.env.NODE_ENV === "development") {
     app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
+} else {
+    app.use(
+        cors({
+            origin: "*",
+            credentials: true, //access-control-allow-credentials:true
+            optionSuccessStatus: 200,
+        })
+    );
 }
 // routes middleware
 app.use("/api", blogRoutes);
